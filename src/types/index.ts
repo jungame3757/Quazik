@@ -85,7 +85,7 @@ export interface Session {
   singleAttempt: boolean;
   questionTimeLimit: number;
   maxParticipants: number;
-  gameMode?: 'normal' | 'roguelike';
+  gameMode?: string;
 }
 
 export interface SessionOptions {
@@ -94,5 +94,5 @@ export interface SessionOptions {
   singleAttempt?: boolean;
   questionTimeLimit?: number;
   maxParticipants?: number;
-  gameMode?: 'normal' | 'roguelike';
+  gameMode?: string;
 }

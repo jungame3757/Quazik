@@ -28,7 +28,7 @@ export interface Session {
   singleAttempt: boolean;
   questionTimeLimit: number;
   maxParticipants: number;
-  gameMode?: 'normal' | 'roguelike'; // 게임 모드 추가
+  gameMode?: string; // 향후 모드 확장 대비(기본 'normal')
 }
 
 export interface Participant {
@@ -56,8 +56,6 @@ export interface Answer {
   isCorrect: boolean;
   points: number; // score를 points로 변경
   timeSpent?: number;
-  stageType?: string;
-  mode?: string;
 }
 
 // sessionAnswers용 기존 Answer 인터페이스 (호환성 유지)
@@ -104,7 +102,7 @@ export interface SessionOptions {
   singleAttempt?: boolean; // 참가자 시도 횟수 제한 (true: 한 번만, false: 여러 번 가능)
   questionTimeLimit?: number; // 문제 풀이 제한 시간 (초 단위)
   maxParticipants?: number; // 최대 참가자 수
-  gameMode?: 'normal' | 'roguelike'; // 게임 모드
+  gameMode?: string; // 향후 모드 확장 대비(기본 'normal')
 }
 
 // 세션 생성 함수
@@ -555,9 +553,7 @@ export const submitAnswer = async (
   },
   isCorrect: boolean,
   score: number,
-  timeSpent?: number,
-  stageType?: string,
-  mode?: string
+  timeSpent?: number
 ): Promise<void> => {
   try {
     // 답변 형식에 따라 적절한 답변 데이터 구성
@@ -591,9 +587,7 @@ export const submitAnswer = async (
       answeredAt: Date.now(),
       isCorrect,
       points: score,
-      ...(timeSpent !== undefined && { timeSpent }),
-      ...(stageType && { stageType }),
-      ...(mode && { mode })
+      ...(timeSpent !== undefined && { timeSpent })
     });
     
     // 참가자 점수 업데이트

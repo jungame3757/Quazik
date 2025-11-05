@@ -142,7 +142,7 @@
         ".write": "auth !== null",
         
         "$userId": {
-          ".write": "auth !== null && (auth.uid === $userId || root.child('sessions').child($sessionId).child('hostId').val() === auth.uid || $sessionId.contains('_roguelike'))",
+          ".write": "auth !== null && (auth.uid === $userId || root.child('sessions').child($sessionId).child('hostId').val() === auth.uid)",
           "score": {
             ".validate": "newData.isNumber() && newData.val() >= 0"
           },

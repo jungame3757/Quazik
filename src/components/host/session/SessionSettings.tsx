@@ -8,7 +8,6 @@ export interface SessionSettings {
   randomizeQuestions: boolean;
   singleAttempt: boolean;
   questionTimeLimit: number;
-  gameMode: 'normal' | 'roguelike';
 }
 
 // 세션 설정 컴포넌트 props 타입

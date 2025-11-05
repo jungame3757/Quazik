@@ -20,7 +20,6 @@ import ActivityHistory from './pages/host/ActivityHistory';
 import SessionHistoryDetail from './pages/host/SessionHistory';
 import JoinQuiz from './pages/client/JoinQuiz';
 import PlayQuiz from './pages/client/PlayQuiz';
-import RoguelikeQuiz from './pages/client/RoguelikeQuiz';
 import './index.css';
 
 function App() {
@@ -52,8 +51,7 @@ function App() {
               <Route path="/join" element={<JoinQuiz />} />
               <Route path="/play/:quizId" element={<PlayQuiz />} />
               
-              {/* 로그라이크 퀴즈 라우트 */}
-              <Route path="/roguelike/:quizId" element={<ProtectedRoute><RoguelikeQuiz /></ProtectedRoute>} />
+              {/* 로그라이크 모드 제거됨: 전용 라우트 없음 */}
               
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>

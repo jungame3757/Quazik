@@ -83,6 +83,7 @@ RTDB는 실시간으로 동기화되어야 하는 세션 관련 데이터를 주
     *   `singleAttempt`: (Boolean) 참가자 답변 시도 횟수 제한 여부 (한 번만 가능)
     *   `questionTimeLimit`: (Number) 각 질문당 풀이 제한 시간 (초 단위)
     *   `maxParticipants`: (Number) 세션당 최대 참가자 수 (기본값: 50명)
+    *   `gameMode`: (String, Optional) 현재는 'normal'만 사용하며, 향후 모드 확장을 위한 예약 필드
 
 ### 세션 설정 옵션
 
@@ -94,6 +95,7 @@ RTDB는 실시간으로 동기화되어야 하는 세션 관련 데이터를 주
     *   `singleAttempt`: (Boolean, Optional) 참가자 답변 시도 횟수 제한 (기본값: true - 한 번만 가능)
     *   `questionTimeLimit`: (Number, Optional) 각 질문당 풀이 제한 시간 (초 단위, 기본값: 30초)
     *   `maxParticipants`: (Number, Optional) 세션당 최대 참가자 수 (기본값: 50명, 최소: 5명)
+    *   `gameMode`: (String, Optional) 지정하지 않으면 'normal'로 저장됨(미래 확장 대비)
 
 ### 세션 코드 인덱스
 
@@ -150,8 +152,6 @@ RTDB는 실시간으로 동기화되어야 하는 세션 관련 데이터를 주
             *   `points`: (Number) 해당 답변으로 획득한 점수 (의견 수집은 항상 0)
             *   `answeredAt`: (Number) 답변 제출 시간 (Unix Timestamp)
             *   `timeSpent`: (Number, Optional) 답변에 소요된 시간 (밀리초)
-            *   `stageType`: (String, Optional) 로그라이크 모드에서의 스테이지 타입
-            *   `mode`: (String, Optional) 게임 모드 ('normal' | 'roguelike')
     *   `attempts`: (Array of `Attempt` Objects, Optional) 퀴즈 재시도 시 이전 시도 기록을 저장합니다.
         *   `Attempt` 객체 구조:
             *   `answers`: (Object) 해당 시도의 `answers` 객체 (위 `answers` 구조와 동일)
