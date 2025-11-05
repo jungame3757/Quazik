@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Clock, Eye, CalendarClock, Shuffle, UserCheck, Plus, Minus, Gamepad2 } from 'lucide-react';
+import { Settings, Clock, Eye, CalendarClock, Shuffle, UserCheck, Plus, Minus } from 'lucide-react';
 import { Quiz } from '../../../types';
 
 // 세션 설정 타입 정의
@@ -27,14 +27,6 @@ const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, s
   // 퀴즈에 문제가 있는지 확인하는 헬퍼 함수
   const hasQuestions = () => {
     return quiz && quiz.questions && Array.isArray(quiz.questions) && quiz.questions.length > 0;
-  };
-  
-  // 로그라이크 모드 호환성 확인
-  const isRoguelikeCompatible = () => {
-    if (!quiz || !quiz.questions) return false;
-    const hasMultipleChoice = quiz.questions.some(q => q.type === 'multiple-choice');
-    const hasShortAnswer = quiz.questions.some(q => q.type === 'short-answer');
-    return hasMultipleChoice || hasShortAnswer;
   };
   
   // 만료 시간 표시 함수
@@ -136,84 +128,6 @@ const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, s
         <div className="grid grid-cols-1 gap-3 sm:gap-4">
           {/* 설정 카드들 */}
           <div className="bg-white rounded-xl shadow-sm p-3 sm:p-4 grid gap-3 sm:gap-4">
-            {/* 게임 모드 선택 */}
-            <div className="flex flex-col space-y-3">
-              <div className="flex items-center">
-                <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 text-purple-600 mr-2">
-                  <Gamepad2 size={18} />
-                </div>
-                <span className="font-medium">게임 모드</span>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {/* 일반 모드 */}
-                <button
-                  type="button"
-                  onClick={() => setSettings({...settings, gameMode: 'normal'})}
-                  disabled={isLoading}
-                  className={`
-                    p-3 rounded-lg border-2 transition-all text-left
-                    ${settings.gameMode === 'normal' 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-gray-200 hover:border-gray-300 bg-white'}
-                    ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                  `}
-                >
-                  <div className="font-medium text-sm">일반 모드</div>
-                  <div className="text-xs text-gray-600 mt-1">기존 퀴즈 활동</div>
-                </button>
-                
-                {/* 로그라이크 모드 */}
-                <button
-                  type="button"
-                  onClick={() => isRoguelikeCompatible() && setSettings({...settings, gameMode: 'roguelike'})}
-                  disabled={isLoading || !isRoguelikeCompatible()}
-                  className={`
-                    p-3 rounded-lg border-2 transition-all text-left relative
-                    ${settings.gameMode === 'roguelike' 
-                      ? 'border-orange-500 bg-orange-50' 
-                      : isRoguelikeCompatible() 
-                        ? 'border-gray-200 hover:border-gray-300 bg-white cursor-pointer'
-                        : 'border-gray-200 bg-gray-100 cursor-not-allowed'}
-                    ${isLoading ? 'opacity-50' : ''}
-                  `}
-                >
-                  <div className="flex items-center">
-                    <span className="font-medium text-sm">로그라이크 모드</span>
-                    <span className="text-xs ml-1">🎮</span>
-                  </div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    {isRoguelikeCompatible() 
-                      ? '퀴즈 어드벤처 모드' 
-                      : '객관식/주관식 문제 필요'}
-                  </div>
-                  {!isRoguelikeCompatible() && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 rounded-lg">
-                      <span className="text-xs text-gray-500 font-medium">호환되지 않음</span>
-                    </div>
-                  )}
-                </button>
-              </div>
-              
-              {/* 로그라이크 모드 설명 */}
-              {settings.gameMode === 'roguelike' && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                  <div className="text-sm text-orange-800">
-                    <div className="font-medium mb-1">🎮 로그라이크 모드 특징:</div>
-                    <ul className="text-xs space-y-1 ml-4">
-                      <li>• 개별 플레이어가 독립적으로 게임 진행</li>
-                      <li>• 스테이지별 도전과 보상 시스템</li>
-                      <li>• 게임화된 퀴즈 경험</li>
-                      <li>• 버프와 룰렛 등 특별 요소</li>
-                    </ul>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 구분선 */}
-            <div className="border-t border-gray-100"></div>
-
             {/* 만료 기간 설정 */}
             <div className="flex items-center justify-between">
               <div className="flex items-center flex-nowrap">
