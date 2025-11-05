@@ -14,7 +14,7 @@ import { deleteQuiz } from '../../firebase/quizService';
 
 // 컴포넌트 임포트
 import { QuizHeader, SessionControls, SessionTabs, SessionSettingsFrame } from '../../components/host/session';
-import { SessionSettings } from '../../components/host/session/SessionSettings';
+import { SessionSettings } from '../../components/host/session/SessionQuizPreview';
 
 // 모달 컴포넌트 임포트
 import { 
@@ -69,6 +69,7 @@ const SessionQuiz: React.FC = () => {
   const [endingSession, setEndingSession] = useState(false);
   const [showEndSessionConfirm, setShowEndSessionConfirm] = useState(false);
   const [showModeSelect, setShowModeSelect] = useState(false);
+  const [revealAnswers, setRevealAnswers] = useState(false);
   const [sessionDeleted, setSessionDeleted] = useState(false);
   const [loadingActiveSession, setLoadingActiveSession] = useState(false);
   const [quizLoaded, setQuizLoaded] = useState(false);
@@ -710,15 +711,42 @@ const SessionQuiz: React.FC = () => {
           />
         </div>
 
-        {/* 세션 설정 프레임 - 세션이 없을 때만 표시 */}
+        {/* 미리보기 제어 및 세션 설정 프레임 - 세션이 없을 때만 표시 */}
         {needsSession && (
-          <SessionSettingsFrame 
-            settings={sessionSettings}
-            setSettings={setSessionSettings}
-            isLoading={creatingSession}
-            quiz={quiz}
-            showSettingsTab={false}
-          />
+          <>
+            <div className="bg-white rounded-xl shadow-sm p-3 sm:p-4 mb-3">
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-sm sm:text-base">문제 정답 보기</span>
+                <div className="relative inline-block w-10 h-6 ml-2">
+                  <input
+                    type="checkbox"
+                    id="toggleRevealAnswers"
+                    className="opacity-0 w-0 h-0"
+                    checked={revealAnswers}
+                    onChange={(e) => setRevealAnswers(e.target.checked)}
+                    disabled={creatingSession}
+                  />
+                  <label
+                    htmlFor="toggleRevealAnswers"
+                    className={`absolute cursor-pointer top-0 left-0 right-0 bottom-0 rounded-full transition-colors duration-200 ease-in-out ${revealAnswers ? 'bg-purple-500' : 'bg-gray-300'} ${creatingSession ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <span
+                      className={`absolute left-0.5 bottom-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-200 ease-in-out ${revealAnswers ? 'transform translate-x-4' : ''}`}
+                    ></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <SessionSettingsFrame 
+              settings={sessionSettings}
+              setSettings={setSessionSettings}
+              isLoading={creatingSession}
+              quiz={quiz}
+              showSettingsTab={false}
+              revealAnswers={revealAnswers}
+            />
+          </>
         )}
 
         {/* 세션 탭 컴포넌트 */}

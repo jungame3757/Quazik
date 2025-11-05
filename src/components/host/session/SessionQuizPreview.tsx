@@ -17,10 +17,11 @@ interface SessionSettingsFrameProps {
   isLoading: boolean;
   quiz?: Quiz;
   showSettingsTab?: boolean;
+  revealAnswers?: boolean;
 }
 
 // 세션 설정 컴포넌트
-const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, setSettings, isLoading, quiz, showSettingsTab = true }) => {
+const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, setSettings, isLoading, quiz, showSettingsTab = true, revealAnswers = false }) => {
   // 탭 상태 관리
   const [activeTab, setActiveTab] = useState<'settings' | 'preview'>('settings');
 
@@ -346,19 +347,19 @@ const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, s
                         <div 
                           key={optionIndex} 
                           className={`relative border rounded-lg p-2 sm:p-3 transition-colors
-                            ${optionIndex === question.correctAnswer 
+                            ${revealAnswers && optionIndex === question.correctAnswer 
                               ? 'border-green-500 bg-green-50' 
                               : 'border-gray-200 hover:bg-gray-50'}`}
                         >
                           <div className="flex items-center">
                             <div className={`
                               w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center mr-2 text-xs font-bold
-                              ${optionIndex === question.correctAnswer ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}
+                              ${revealAnswers && optionIndex === question.correctAnswer ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}
                             `}>
                               {optionIndex + 1}
                             </div>
                             <span className="text-xs sm:text-sm">{option}</span>
-                            {optionIndex === question.correctAnswer && (
+                            {revealAnswers && optionIndex === question.correctAnswer && (
                               <div className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-0.5 sm:py-1 rounded-full">
                                 정답
                               </div>
@@ -373,16 +374,20 @@ const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, s
                   {question.type === 'short-answer' && (
                     <div className={`${typeStyle.bg} ${typeStyle.border} border rounded-lg p-3`}>
                       <div className="space-y-3">
-                        <div>
-                          <div className="text-sm font-medium text-gray-700 mb-2">정답:</div>
-                          <div className="bg-white border border-green-300 rounded-md p-2">
-                            <span className="text-sm text-green-700 font-medium">
-                              {question.correctAnswerText}
-                            </span>
+                        {revealAnswers ? (
+                          <div>
+                            <div className="text-sm font-medium text-gray-700 mb-2">정답:</div>
+                            <div className="bg-white border border-green-300 rounded-md p-2">
+                              <span className="text-sm text-green-700 font-medium">
+                                {question.correctAnswerText}
+                              </span>
+                            </div>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="text-sm text-gray-500">정답이 가려진 상태입니다</div>
+                        )}
                         
-                        {question.additionalAnswers && question.additionalAnswers.length > 0 && (
+                        {revealAnswers && question.additionalAnswers && question.additionalAnswers.length > 0 && (
                           <div>
                             <div className="text-sm font-medium text-gray-700 mb-2">추가 정답:</div>
                             <div className="space-y-1">
@@ -395,9 +400,11 @@ const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, s
                           </div>
                         )}
                         
-                        <div className="text-xs text-gray-500">
-                          정답 인정 방식: {question.answerMatchType === 'contains' ? '포함' : '정확히 일치'}
-                        </div>
+                        {revealAnswers && (
+                          <div className="text-xs text-gray-500">
+                            정답 인정 방식: {question.answerMatchType === 'contains' ? '포함' : '정확히 일치'}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}

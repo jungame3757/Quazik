@@ -1,4 +1,4 @@
 export { default as QuizHeader } from './QuizHeader';
 export { default as SessionControls } from './SessionControls';
 export { default as SessionTabs } from './SessionTabs';
-export { default as SessionSettingsFrame } from './SessionSettings'; 
+export { default as SessionSettingsFrame } from './SessionQuizPreview'; 
