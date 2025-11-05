@@ -21,7 +21,8 @@ import {
   EditWarningModal, 
   DeleteWarningModal, 
   EndSessionConfirmModal, 
-  QRCodeModal
+  QRCodeModal,
+  GameModeSelectModal
 } from '../../components/ui/modals';
 
 // 세션 설정 기본값
@@ -67,6 +68,7 @@ const SessionQuiz: React.FC = () => {
   const [creatingSession, setCreatingSession] = useState(false);
   const [endingSession, setEndingSession] = useState(false);
   const [showEndSessionConfirm, setShowEndSessionConfirm] = useState(false);
+  const [showModeSelect, setShowModeSelect] = useState(false);
   const [sessionDeleted, setSessionDeleted] = useState(false);
   const [loadingActiveSession, setLoadingActiveSession] = useState(false);
   const [quizLoaded, setQuizLoaded] = useState(false);
@@ -323,40 +325,35 @@ const SessionQuiz: React.FC = () => {
   // 세션 시작 핸들러
   const handleStartSession = async () => {
     if (!quizId || !currentUser || !quiz) return;
-    
     if (isOffline) {
       setError('오프라인 상태에서는 세션을 시작할 수 없습니다.');
       return;
     }
-    
+    setShowModeSelect(true);
+  };
+
+  const handleConfirmMode = async ({ mode, options }: { mode: string; options: { expiresIn: number; randomizeQuestions: boolean; singleAttempt: boolean; questionTimeLimit: number; } }) => {
+    if (!quizId || !currentUser || !quiz) return;
     try {
       setCreatingSession(true);
       setError(null);
-      console.log('세션 생성 시작:', quizId, sessionSettings);
-      
-      // 세션 생성 (일반 모드와 로그라이크 모드 공통)
-      const sessionId = await createSessionForQuiz(quizId, sessionSettings, quiz);
-      console.log('세션 생성 완료:', sessionId);
-      
+      const sessionId = await createSessionForQuiz(quizId, { ...options, gameMode: mode }, quiz);
       if (sessionId) {
         setSessionDeleted(false);
         setSessionLoaded(false);
         setLoadAttempted(false);
-        
         resetSessionState();
-        // 새 활동을 시작할 때 항상 참가자 탭이 선택되도록 설정
         setActiveTab('participants');
-        
         navigate(`/host/session/${quizId}?sessionId=${sessionId}`, { replace: true });
       }
     } catch (err) {
       console.error('세션 생성 실패:', err);
       handleFirestoreError(err as FirestoreError, '세션 생성에 실패했습니다.');
-      // 세션 생성 실패 후에도 UI가 복구되도록 처리
       setSessionDeleted(true);
       setSessionLoaded(true);
     } finally {
       setCreatingSession(false);
+      setShowModeSelect(false);
     }
   };
   
@@ -720,6 +717,7 @@ const SessionQuiz: React.FC = () => {
             setSettings={setSessionSettings}
             isLoading={creatingSession}
             quiz={quiz}
+            showSettingsTab={false}
           />
         )}
 
@@ -752,6 +750,12 @@ const SessionQuiz: React.FC = () => {
           onClose={() => setShowEndSessionConfirm(false)}
           onConfirm={handleEndSession}
           isProcessing={endingSession}
+        />
+
+        <GameModeSelectModal
+          isOpen={showModeSelect}
+          onClose={() => setShowModeSelect(false)}
+          onConfirm={handleConfirmMode}
         />
 
         <EditWarningModal

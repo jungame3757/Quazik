@@ -16,10 +16,11 @@ interface SessionSettingsFrameProps {
   setSettings: React.Dispatch<React.SetStateAction<SessionSettings>>;
   isLoading: boolean;
   quiz?: Quiz;
+  showSettingsTab?: boolean;
 }
 
 // 세션 설정 컴포넌트
-const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, setSettings, isLoading, quiz }) => {
+const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, setSettings, isLoading, quiz, showSettingsTab = true }) => {
   // 탭 상태 관리
   const [activeTab, setActiveTab] = useState<'settings' | 'preview'>('settings');
 
@@ -441,6 +442,14 @@ const SessionSettingsFrame: React.FC<SessionSettingsFrameProps> = ({ settings, s
       </div>
     );
   };
+
+  if (!showSettingsTab) {
+    return (
+      <div className="bg-gray-50 rounded-xl shadow-sm overflow-hidden">
+        {renderPreviewTab()}
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 rounded-xl shadow-sm overflow-hidden">
