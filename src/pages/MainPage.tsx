@@ -247,53 +247,6 @@ const MainPage: React.FC = () => {
             </div>
           </div>
 
-          {/* About Us 섹션 추가 */}
-          <section className="mb-16">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-[#783ae8] mb-4" style={{ fontFamily: 'SBAggroB' }}>
-                콰직이 특별한 이유
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                콰직은 교육의 디지털 전환을 선도하는 혁신적인 온라인 퀴즈 플랫폼입니다. 
-                우리는 학습이 더 재미있고 효과적이 되도록 돕습니다.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              <div className="text-center p-6">
-                <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                  <Users size={32} className="text-purple-600" />
-                </div>
-                <h3 className="text-xl font-bold text-purple-800 mb-2">10,000+</h3>
-                <p className="text-gray-600">활성 사용자</p>
-              </div>
-
-              <div className="text-center p-6">
-                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 size={32} className="text-blue-600" />
-                </div>
-                <h3 className="text-xl font-bold text-blue-800 mb-2">50,000+</h3>
-                <p className="text-gray-600">제작된 퀴즈</p>
-              </div>
-
-              <div className="text-center p-6">
-                <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mx-auto mb-4">
-                  <Clock size={32} className="text-teal-600" />
-                </div>
-                <h3 className="text-xl font-bold text-teal-800 mb-2">24/7</h3>
-                <p className="text-gray-600">서비스 운영</p>
-              </div>
-
-              <div className="text-center p-6">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <Shield size={32} className="text-green-600" />
-                </div>
-                <h3 className="text-xl font-bold text-green-800 mb-2">100%</h3>
-                <p className="text-gray-600">데이터 보안</p>
-              </div>
-            </div>
-          </section>
-
           {/* 추가 기능 섹션 */}
           <section className="mb-16">
             <div className="text-center mb-12">
@@ -341,19 +294,6 @@ const MainPage: React.FC = () => {
                   이미지와 텍스트를 함께 활용하여 더욱 풍부한 퀴즈를 만들어보세요.
                 </p>
               </div>
-
-              <div className="bg-white p-8 rounded-2xl border-2 border-green-200 shadow-lg">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-                    <Users size={24} className="text-green-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-green-800">팀 협업</h3>
-                </div>
-                <p className="text-gray-700 leading-relaxed">
-                  동료들과 함께 퀴즈를 제작하고 관리할 수 있습니다. 
-                  역할 분담과 권한 관리를 통해 효율적인 팀워크를 경험해보세요.
-                </p>
-              </div>
             </div>
           </section>
 
@@ -389,65 +329,6 @@ const MainPage: React.FC = () => {
                   </p>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* 블로그 섹션 */}
-          <section className="mb-16">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-[#783ae8] mb-4" style={{ fontFamily: 'SBAggroB' }}>
-                콰직 블로그
-              </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                교육과 퀴즈에 관한 최신 트렌드, 실용적인 팁, 그리고 흥미로운 인사이트를 확인해보세요.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <Link to="/blog/effective-quiz-creation" className="group">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-                      교육 팁
-                    </span>
-                    <span className="text-gray-400 text-sm">2024-01-15</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-3 group-hover:text-purple-700 transition-colors">
-                    효과적인 퀴즈 제작을 위한 5가지 핵심 원칙
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    학습자의 참여도를 높이고 교육 효과를 극대화하는 퀴즈 제작 방법을 알아보세요.
-                  </p>
-                </div>
-              </Link>
-
-              <Link to="/blog/interactive-learning-benefits" className="group">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      교육 연구
-                    </span>
-                    <span className="text-gray-400 text-sm">2024-01-12</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-3 group-hover:text-purple-700 transition-colors">
-                    상호작용 학습의 놀라운 효과: 퀴즈가 학습에 미치는 영향
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    연구 결과에 따르면 상호작용 학습은 기존 강의식 교육보다 65% 더 높은 학습 효과를 보여줍니다.
-                  </p>
-                </div>
-              </Link>
-            </div>
-
-            <div className="text-center">
-              <Link to="/blog">
-                <Button 
-                  variant="secondary"
-                  className="px-6 py-3 border-2 border-purple-200 hover:border-purple-300 hover:bg-purple-50 transition-all"
-                >
-                  더 많은 포스트 보기
-                </Button>
-              </Link>
             </div>
           </section>
         </main>
