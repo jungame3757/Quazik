@@ -28,8 +28,8 @@ const GameModeSelectModal: React.FC<GameModeSelectModalProps> = ({ isOpen, onClo
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl p-5 max-w-lg w-full">
-        <h3 className="text-lg font-bold text-gray-900 mb-3">게임 모드 선택</h3>
+      <div className="bg-white rounded-xl p-5 max-w-3xl w-full">
+        <h3 className="text-lg font-bold text-gray-900 mb-3">활동 설정</h3>
 
         <div className="space-y-2 mb-4">
           {modes.map((m) => (

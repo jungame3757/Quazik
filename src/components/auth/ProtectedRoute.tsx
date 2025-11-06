@@ -10,7 +10,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { currentUser, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="p-8 text-center">로딩 중...</div>;
+    return <div className="p-8 text-center">인증 확인 중...</div>;
   }
 
   if (!currentUser) {

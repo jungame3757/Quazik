@@ -7,12 +7,7 @@ const ModeRegistry: Record<string, ModeDefinition> = {};
 ModeRegistry['normal'] = {
   id: 'normal',
   displayName: '일반 모드',
-  clientFlags: {
-    enableRanking: true,
-    enableTimer: true,
-  },
 };
-
 export { ModeRegistry };
 export type { ModeDefinition };
 
