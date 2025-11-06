@@ -14,7 +14,6 @@ import { deleteQuiz } from '../../firebase/quizService';
 
 // 컴포넌트 임포트
 import { QuizHeader, SessionControls, SessionTabs, SessionSettingsFrame } from '../../components/host/session';
-import { SessionSettings } from '../../components/host/session/SessionQuizPreview';
 
 // 모달 컴포넌트 임포트
 import { 
@@ -25,14 +24,7 @@ import {
   GameModeSelectModal
 } from '../../components/ui/modals';
 
-// 세션 설정 기본값
-const DEFAULT_SESSION_SETTINGS: SessionSettings = {
-  expiresIn: 24 * 60 * 60 * 1000, // 24시간
-  randomizeQuestions: false,
-  singleAttempt: true,
-  questionTimeLimit: 30 // 30초
-};
-
+// 세션 설정 기본값 제거: 규칙 편집은 모달에서만 수행
 const SessionQuiz: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
@@ -81,11 +73,11 @@ const SessionQuiz: React.FC = () => {
   const [isOffline, setIsOffline] = useState(false);
   const [waitingForAuth, setWaitingForAuth] = useState(true);
   
-  // 세션 설정 관련 상태
-  const [sessionSettings, setSessionSettings] = useState<SessionSettings>(DEFAULT_SESSION_SETTINGS);
+  // 세션 규칙 편집은 GameModeSelectModal에서만 관리
   
   const urlSearchParams = new URLSearchParams(location.search);
   const urlSessionId = urlSearchParams.get('sessionId');
+  const openStartModal = urlSearchParams.get('openStartModal');
   
   // 네트워크 상태 모니터링
   useEffect(() => {
@@ -585,6 +577,17 @@ const SessionQuiz: React.FC = () => {
     }
   }, [currentSession]);
 
+  // 시작 모달 자동 오픈 (세션이 없고 쿼리 플래그가 있을 때)
+  useEffect(() => {
+    if ((!currentSession || sessionDeleted) && (openStartModal === '1' || openStartModal === 'true')) {
+      setShowModeSelect(true);
+      // 새로고침 시 반복 오픈 방지를 위해 쿼리 제거
+      if (quizId) {
+        navigate(`/host/session/${quizId}`, { replace: true });
+      }
+    }
+  }, [currentSession, sessionDeleted, openStartModal, quizId, navigate]);
+
   if (waitingForAuth || isLoading || quizLoading || sessionLoading || loadingActiveSession) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 p-4">
@@ -739,11 +742,7 @@ const SessionQuiz: React.FC = () => {
             </div>
 
             <SessionSettingsFrame 
-              settings={sessionSettings}
-              setSettings={setSessionSettings}
-              isLoading={creatingSession}
               quiz={quiz}
-              showSettingsTab={false}
               revealAnswers={revealAnswers}
             />
           </>

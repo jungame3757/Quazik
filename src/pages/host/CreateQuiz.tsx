@@ -15,7 +15,7 @@ import Breadcrumb from '../../components/ui/Breadcrumb';
 const CreateQuiz: React.FC = () => {
   const navigate = useNavigate();
   const { createQuiz, error: quizError } = useQuiz();
-  const { createSessionForQuiz, error: sessionError } = useSession();
+  const { error: sessionError } = useSession();
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -95,15 +95,11 @@ const CreateQuiz: React.FC = () => {
         });
         
         console.log("퀴즈 생성 완료, ID:", quizId);
-        
-        // 퀴즈 생성 후 즉시 세션 생성
-        const sessionId = await createSessionForQuiz(quizId);
-        console.log("세션 생성 완료, ID:", sessionId);
-        
+
         setIsFormDirty(false); // 폼 저장 시 더티 상태 초기화
-        
-        // 세션 페이지로 이동
-        navigate(`/host/session/${quizId}`);
+
+        // 세션 페이지로 이동 + 시작 모달 자동 오픈 플래그 전달
+        navigate(`/host/session/${quizId}?openStartModal=1`);
       } catch (createError) {
         console.error("퀴즈/세션 생성 실패:", createError);
         setError(createError instanceof Error ? 
