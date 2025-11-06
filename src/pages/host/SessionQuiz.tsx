@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import copy from 'clipboard-copy';
-import { useQuiz } from '../../contexts/QuizContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { FirestoreError } from 'firebase/firestore';
+import { useQuiz } from '../../contexts/QuizContext';
 import { useSession } from '../../contexts/SessionContext';
+import { deleteQuiz } from '../../firebase/quizService';
 import HostNavBar from '../../components/host/HostNavBar';
 import HostPageHeader from '../../components/host/HostPageHeader';
 import LoadingOverlay from '../../components/ui/LoadingOverlay';
 import LoadingAnimation from '../../components/ui/LoadingAnimation';
 import Breadcrumb from '../../components/ui/Breadcrumb';
-import { FirestoreError } from 'firebase/firestore';
-import { deleteQuiz } from '../../firebase/quizService';
+import copy from 'clipboard-copy';
 
 // 컴포넌트 임포트
 import { QuizHeader, SessionControls, SessionTabs, SessionSettingsFrame } from '../../components/host/session';
@@ -72,8 +72,6 @@ const SessionQuiz: React.FC = () => {
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [waitingForAuth, setWaitingForAuth] = useState(true);
-  
-  // 세션 규칙 편집은 GameModeSelectModal에서만 관리
   
   const urlSearchParams = new URLSearchParams(location.search);
   const urlSessionId = urlSearchParams.get('sessionId');
