@@ -10,11 +10,12 @@ import HostNavBar from '../../components/host/HostNavBar';
 import HostPageHeader from '../../components/host/HostPageHeader';
 import LoadingOverlay from '../../components/ui/LoadingOverlay';
 import Breadcrumb from '../../components/ui/Breadcrumb';
-import { getAuth } from 'firebase/auth';
+import { useAuth } from '../../contexts/AuthContext';
 
 const EditQuiz: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const { 
     getQuiz, 
     updateQuiz, 
@@ -42,8 +43,6 @@ const EditQuiz: React.FC = () => {
         setError('');
         
         // 현재 사용자의 ID를 호스트 ID로 전달
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
         const hostId = currentUser?.uid;
         
         // 호스트 ID와 함께 퀴즈 로드 시도
@@ -163,8 +162,6 @@ const EditQuiz: React.FC = () => {
       }
       
       // 현재 사용자 ID 가져오기
-      const auth = getAuth();
-      const currentUser = auth.currentUser;
       const hostId = currentUser?.uid;
       
       // 기존 퀴즈 데이터와 비교하여 변경사항이 있는지 확인

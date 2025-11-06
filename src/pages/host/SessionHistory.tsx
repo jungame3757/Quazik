@@ -71,8 +71,8 @@ const SessionHistoryDetail: React.FC = () => {
   
   useEffect(() => {
     const loadSessionHistory = async () => {
-      if (!currentUser || !historyId) {
-        navigate('/login');
+      if (!historyId) {
+        navigate('/host/history');
         return;
       }
       
@@ -80,7 +80,7 @@ const SessionHistoryDetail: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        const history = await getSessionHistoryById(historyId, currentUser.uid);
+        const history = await getSessionHistoryById(historyId, currentUser!.uid);
         
         if (!history) {
           setError('세션 기록을 찾을 수 없습니다.');

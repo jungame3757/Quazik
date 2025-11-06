@@ -175,7 +175,6 @@ const ActivityHistory: React.FC = () => {
   // 페이지별 데이터 로드
   const loadPageData = useCallback(async (page: number) => {
     if (!currentUser) {
-      navigate('/login');
       return;
     }
     

@@ -103,12 +103,8 @@ const MyQuizzes: React.FC = () => {
 
   // 첫 렌더링 또는 사용자 변경 시 로드
   useEffect(() => {
-    if (!currentUser) {
-      navigate('/login');
-      return;
-    }
     loadQuizzes();
-  }, [currentUser, navigate, loadQuizzes]);
+  }, [currentUser, loadQuizzes]);
 
   // location.key가 변경될 때(다른 페이지에서 돌아올 때) 로드
   useEffect(() => {

@@ -139,15 +139,6 @@ const SessionQuiz: React.FC = () => {
         return;
       }
       
-      // 인증되지 않은 경우 일단 리턴
-      if (!currentUser && !authLoading && authCheckedRef.current) {
-        console.log("인증되지 않은 사용자가 세션 로드 시도");
-        setError('로그인 후 다시 시도해주세요.');
-        setLoadAttempted(true);
-        setSessionLoaded(true);
-        return;
-      }
-      
       try {
         sessionLoadingRef.current = true;
         setLoadAttempted(true);
@@ -213,7 +204,7 @@ const SessionQuiz: React.FC = () => {
         return;
       }
       
-      // 인증되지 않은 경우에도 세션 스토리지에서 먼저 데이터 확인
+      // 세션 스토리지에서 먼저 데이터 확인
       const cachedQuiz = sessionStorage.getItem(`quiz_${quizId}`);
       if (cachedQuiz) {
         try {
@@ -223,24 +214,13 @@ const SessionQuiz: React.FC = () => {
           setQuizLoaded(true);
           setIsLoading(false);
           
-          // 인증 대기 중인 경우 여기서 리턴
-          if (!currentUser && authLoading) {
-            return;
-          }
+          // 라우트 보호로 인증 로딩은 이 시점에 완료되어 있음
         } catch (cacheError) {
           console.warn("캐시 사용 실패:", cacheError);
         }
       }
       
-      // 인증되지 않은 경우 일단 리턴
-      if (!currentUser && !authLoading && authCheckedRef.current) {
-        console.log("인증되지 않은 사용자가 퀴즈 로드 시도");
-        if (!quiz) {
-          setError('로그인 후 다시 시도해주세요.');
-          navigate('/host/my-quizzes', { replace: true });
-        }
-        return;
-      }
+      // 라우트 보호에 의존: 비로그인 분기 제거
       
       try {
         quizLoadingRef.current = true;
@@ -281,10 +261,6 @@ const SessionQuiz: React.FC = () => {
               setSessionDeleted(true);
             }
           }
-        } else if (!quiz) {
-          // 여전히 퀴즈 데이터가 없는 경우 (캐시도 없고 인증도 안됨)
-          setError('로그인 후 다시 시도해주세요.');
-          navigate('/host/my-quizzes', { replace: true });
         }
       } catch (err) {
         console.error("퀴즈 로드 오류:", err);
@@ -315,7 +291,7 @@ const SessionQuiz: React.FC = () => {
   
   // 세션 시작 핸들러
   const handleStartSession = async () => {
-    if (!quizId || !currentUser || !quiz) return;
+    if (!quizId || !quiz) return;
     if (isOffline) {
       setError('오프라인 상태에서는 세션을 시작할 수 없습니다.');
       return;
@@ -324,7 +300,7 @@ const SessionQuiz: React.FC = () => {
   };
 
   const handleConfirmMode = async ({ mode, options }: { mode: string; options: { expiresIn: number; randomizeQuestions: boolean; singleAttempt: boolean; questionTimeLimit: number; } }) => {
-    if (!quizId || !currentUser || !quiz) return;
+    if (!quizId || !quiz) return;
     try {
       setCreatingSession(true);
       setError(null);
