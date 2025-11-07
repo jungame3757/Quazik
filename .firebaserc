@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "quizshow-8ded7"
+    "default": "quizshow-8ded7",
+    "test": "quazik-test"
   }
 }
