@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { Quiz, Question, Participant } from '../types';
 import {
@@ -68,15 +68,10 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
   };
 
-  // 현재 로그인한 사용자의 퀴즈 불러오기
-  useEffect(() => {
-    if (currentUser) {
-      loadUserQuizzes();
-    }
-  }, [currentUser]);
+  // (deferred) 현재 로그인한 사용자의 퀴즈 불러오기 효과는 loadUserQuizzes 정의 이후로 이동
 
   // 사용자의 퀴즈 목록 불러오기
-  const loadUserQuizzes = async () => {
+  const loadUserQuizzes = useCallback(async () => {
     if (!currentUser) return;
 
     try {
@@ -95,7 +90,14 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser]);
+
+  // 현재 로그인한 사용자의 퀴즈 불러오기
+  useEffect(() => {
+    if (currentUser) {
+      loadUserQuizzes();
+    }
+  }, [currentUser, loadUserQuizzes]);
 
   // 퀴즈 생성
   const createQuiz = async (quiz: Omit<Quiz, 'id'>) => {
