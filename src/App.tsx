@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { QuizProvider } from './contexts/QuizContext';
 import { SessionProvider } from './contexts/SessionContext';
@@ -28,6 +29,7 @@ function App() {
       <AuthProvider>
         <QuizProvider>
           <SessionProvider>
+            <ChannelTalkController />
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/login" element={<Login />} />
@@ -63,3 +65,18 @@ function App() {
 }
 
 export default App;
+
+function ChannelTalkController() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const ch = (window as any).ChannelIO as ((...args: any[]) => void) | undefined;
+    if (!ch) return;
+    const isClientRoute = pathname === '/join' || pathname.startsWith('/play/');
+    if (isClientRoute) {
+      ch('hideChannelButton');
+    } else {
+      ch('showChannelButton');
+    }
+  }, [pathname]);
+  return null;
+}
