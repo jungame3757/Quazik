@@ -143,15 +143,13 @@ export const createSession = async (quizId: string, hostId: string, options?: Se
       gameMode: options?.gameMode || 'normal'
     };
     
-    // 세션 데이터 저장
-    await set(newSessionRef, sessionData);
-    
-    // 세션 코드 인덱스 생성
-    await set(ref(rtdb, `sessionCodes/${sessionCode}`), sessionId);
-    
-    // 호스트 사용자의 활성 세션 업데이트
-    await set(ref(rtdb, `userSessions/${hostId}/active/${sessionId}`), true);
-    
+    // 다중 경로 업데이트로 원자적 커밋
+    const updates: { [path: string]: any } = {};
+    updates[`sessions/${sessionId}`] = sessionData;
+    updates[`sessionCodes/${sessionCode}`] = sessionId;
+    updates[`userSessions/${hostId}/active/${sessionId}`] = true;
+
+    await update(ref(rtdb), updates);
     return sessionId;
   } catch (error) {
     console.error('세션 생성 오류:', error);
@@ -241,21 +239,15 @@ export const createSessionWithQuizData = async (
       })
     }));
     
-    // 세션 데이터 저장
-    await set(newSessionRef, sessionData);
-    
-    // 세션 코드 인덱스 생성
-    await set(ref(rtdb, `sessionCodes/${sessionCode}`), sessionId);
-    
-    // 퀴즈 데이터 저장 (클라이언트용)
-    await set(ref(rtdb, `quizData/${sessionId}/public`), clientQuizData);
-    
-    // 정답 데이터 저장 (호스트 전용)
-    await set(ref(rtdb, `quizData/${sessionId}/answers`), hostAnswersData);
-    
-    // 호스트 사용자의 활성 세션 업데이트
-    await set(ref(rtdb, `userSessions/${hostId}/active/${sessionId}`), true);
-    
+    // 다중 경로 업데이트로 원자적 커밋
+    const updates: { [path: string]: any } = {};
+    updates[`sessions/${sessionId}`] = sessionData;
+    updates[`sessionCodes/${sessionCode}`] = sessionId;
+    updates[`quizData/${sessionId}/public`] = clientQuizData;
+    updates[`quizData/${sessionId}/answers`] = hostAnswersData;
+    updates[`userSessions/${hostId}/active/${sessionId}`] = true;
+
+    await update(ref(rtdb), updates);
     return sessionId;
   } catch (error) {
     console.error('세션 생성 오류:', error);
@@ -568,18 +560,13 @@ export const submitAnswer = async (
       score
     };
     
-    // 응답 저장 (기존 sessionAnswers 구조 유지)
-    await set(
-      ref(rtdb, `sessionAnswers/${sessionId}_question_${questionIndex}/${userId}`), 
-      submitData
-    );
-    
     // 다음 답변 시퀀스 인덱스 가져오기
     const nextSequenceIndex = await getNextAnswerSequenceIndex(sessionId, userId);
-    
-    // 참가자의 개별 답변 기록 저장 (순차적 인덱스 사용)
-    const participantAnswerRef = ref(rtdb, `participants/${sessionId}/${userId}/answers/${nextSequenceIndex}`);
-    await set(participantAnswerRef, {
+
+    // 질문별 집계 경로를 세션 기준으로 변경하고, 참가자 히스토리와 함께 원자적으로 커밋
+    const updates: { [path: string]: any } = {};
+    updates[`sessionAnswers/${sessionId}/${questionIndex}/${userId}`] = submitData;
+    updates[`participants/${sessionId}/${userId}/answers/${nextSequenceIndex}`] = {
       questionIndex: questionIndex,
       ...(answerData.answerIndex !== undefined && { answerIndex: answerData.answerIndex }),
       ...(answerData.answerText !== undefined && { answerText: answerData.answerText }),
@@ -588,7 +575,8 @@ export const submitAnswer = async (
       isCorrect,
       points: score,
       ...(timeSpent !== undefined && { timeSpent })
-    });
+    };
+    await update(ref(rtdb), updates);
     
     // 참가자 점수 업데이트
     const participantRef = ref(rtdb, `participants/${sessionId}/${userId}`);
@@ -705,21 +693,8 @@ export const deleteSession = async (sessionId: string): Promise<void> => {
       remove(ref(rtdb, `quizData/${sessionId}`))
     ];
     
-    // 응답 데이터 삭제 (개별 접근 대신 상위 경로에서 한 번에 삭제)
-    // 세션에 연결된 모든 응답 데이터의 접두사를 사용하는 경로 체크
-    const sessionAnswersRef = ref(rtdb, 'sessionAnswers');
-    const answersSnapshot = await get(sessionAnswersRef);
-    
-    if (answersSnapshot.exists()) {
-      const answerData = answersSnapshot.val();
-      const sessionAnswerPaths = Object.keys(answerData)
-        .filter(path => path.startsWith(`${sessionId}_question_`));
-      
-      // 해당 세션의 응답 경로만 삭제 작업에 추가
-      sessionAnswerPaths.forEach(path => {
-        deletePromises.push(remove(ref(rtdb, `sessionAnswers/${path}`)));
-      });
-    }
+    // 응답 데이터 삭제 (새 구조: 세션 단위로 상위 경로 한 번에 삭제)
+    deletePromises.push(remove(ref(rtdb, `sessionAnswers/${sessionId}`)));
     
     // 먼저 모든 관련 데이터 삭제를 병렬로 처리
     await Promise.all(deletePromises);
@@ -815,7 +790,7 @@ export const subscribeToAnswers = (
   questionIndex: number,
   callback: (answers: Record<string, Answer>) => void
 ) => {
-  const answersRef = ref(rtdb, `sessionAnswers/${sessionId}_question_${questionIndex}`);
+  const answersRef = ref(rtdb, `sessionAnswers/${sessionId}/${questionIndex}`);
   
   const handleSnapshot = (snapshot: any) => {
     if (snapshot.exists()) {

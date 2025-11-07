@@ -105,20 +105,19 @@
       ".read": "auth !== null",
       ".write": "auth !== null",
       
-      "$sessionQuestionId": {
-        "$userId": {
-          ".write": "auth !== null && auth.uid === $userId",
-          "answer": {
-            ".validate": "newData.isString()"
-          },
-          "answeredAt": {
-            ".validate": "newData.isNumber()"
-          },
-          "isCorrect": {
-            ".validate": "newData.isBoolean()"
-          },
-          "score": {
-            ".validate": "newData.isNumber() && newData.val() >= 0"
+      "$sessionId": {
+        "$questionIndex": {
+          "$userId": {
+            ".write": "auth !== null && auth.uid === $userId",
+            "answeredAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "isCorrect": {
+              ".validate": "newData.isBoolean()"
+            },
+            "points": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            }
           }
         }
       }
