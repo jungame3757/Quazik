@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Wand, Lightbulb, User, Settings, Medal, Apple, Users, Shield, Zap, BarChart3, Clock, CheckCircle } from 'lucide-react';
+import { Wand, Lightbulb, User, Settings, Medal, Zap, BarChart3, CheckCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { useQuiz } from '../contexts/QuizContext';
@@ -116,7 +116,7 @@ const MainPage: React.FC = () => {
           </div>
 
           {/* 히어로 섹션 */}
-          <div className="flex flex-col-reverse lg:flex-row items-center gap-6 lg:gap-14 mb-12 pt-4">
+          <div className="flex flex-col-reverse lg:flex-row items-center gap-6 lg:gap-14 mt-40 mb-12 pt-4">
             <div className="lg:w-1/2 text-center lg:text-left">
               <h1 className="font-bold mb-7 tracking-tight leading-tight" style={{ fontFamily: 'SBAggroB' }}>
                 <span className="text-5xl md:text-6xl lg:text-7xl text-[#783ae8] inline-block mb-2">콰직</span><br />
@@ -160,7 +160,7 @@ const MainPage: React.FC = () => {
           <h2 className="text-3xl font-bold text-center mt-10 mb-5 text-[#783ae8] leading-tight">
             퀴즈를 사과 깨물듯 쉽게 <br /> 
             <span style={{ fontFamily: 'SBAggroB', fontSize: '3rem' }} className="flex items-center justify-center gap-2">
-              콰직!<Apple size={48} className="text-red-500 -translate-y-1.5" fill="currentColor" />
+              콰직!
             </span>
           </h2>
           
