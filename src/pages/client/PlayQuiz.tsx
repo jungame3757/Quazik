@@ -25,7 +25,6 @@ const PlayQuiz: React.FC = () => {
     timerPercentage,
     rankings,
     isLoadingRankings,
-    otherOpinions,
     serverValidationResult,
     currentShuffledOptions,
     handleStartQuiz,
@@ -140,7 +139,6 @@ const PlayQuiz: React.FC = () => {
       selectedAnswerIndex={selectedAnswerIndex}
       showResult={showResult}
       onSelectAnswer={handleSelectAnswer}
-      otherOpinions={otherOpinions}
       serverValidationResult={serverValidationResult}
       currentShuffledOptions={currentShuffledOptions}
     />

@@ -59,12 +59,6 @@ export interface Answer {
 }
 
 // sessionAnswers용 기존 Answer 인터페이스 (호환성 유지)
-export interface SessionAnswer {
-  answer: string;
-  answeredAt: number;
-  isCorrect: boolean;
-  score: number;
-}
 
 // Attempt 인터페이스 추가
 export interface Attempt {
@@ -553,19 +547,12 @@ export const submitAnswer = async (
       ? answerData.answerIndex.toString() 
       : answerData.answerText || '';
     
-    const submitData: SessionAnswer = {
-      answer,
-      answeredAt: Date.now(),
-      isCorrect,
-      score
-    };
     
     // 다음 답변 시퀀스 인덱스 가져오기
     const nextSequenceIndex = await getNextAnswerSequenceIndex(sessionId, userId);
 
     // 질문별 집계 경로를 세션 기준으로 변경하고, 참가자 히스토리와 함께 원자적으로 커밋
     const updates: { [path: string]: any } = {};
-    updates[`sessionAnswers/${sessionId}/${questionIndex}/${userId}`] = submitData;
     updates[`participants/${sessionId}/${userId}/answers/${nextSequenceIndex}`] = {
       questionIndex: questionIndex,
       ...(answerData.answerIndex !== undefined && { answerIndex: answerData.answerIndex }),
@@ -693,8 +680,7 @@ export const deleteSession = async (sessionId: string): Promise<void> => {
       remove(ref(rtdb, `quizData/${sessionId}`))
     ];
     
-    // 응답 데이터 삭제 (새 구조: 세션 단위로 상위 경로 한 번에 삭제)
-    deletePromises.push(remove(ref(rtdb, `sessionAnswers/${sessionId}`)));
+    // sessionAnswers 경로 제거됨
     
     // 먼저 모든 관련 데이터 삭제를 병렬로 처리
     await Promise.all(deletePromises);
@@ -785,26 +771,7 @@ export const subscribeToQuestionStatus = (
 };
 
 // 문제별 응답 실시간 리스너 설정
-export const subscribeToAnswers = (
-  sessionId: string,
-  questionIndex: number,
-  callback: (answers: Record<string, Answer>) => void
-) => {
-  const answersRef = ref(rtdb, `sessionAnswers/${sessionId}/${questionIndex}`);
-  
-  const handleSnapshot = (snapshot: any) => {
-    if (snapshot.exists()) {
-      callback(snapshot.val());
-    } else {
-      callback({});
-    }
-  };
-  
-  onValue(answersRef, handleSnapshot);
-  
-  // 구독 취소 함수 반환
-  return () => off(answersRef, 'value', handleSnapshot);
-};
+// sessionAnswers 실시간 구독은 제거되었습니다
 
 // 호스트 ID로 세션 목록 가져오기 - userSessions 활용으로 효율화
 export const getSessionsByHostId = async (hostId: string): Promise<Session[]> => {

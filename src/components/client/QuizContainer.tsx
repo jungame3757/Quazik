@@ -15,7 +15,6 @@ interface QuizContainerProps {
   selectedAnswerIndex: number | null;
   showResult: boolean;
   onSelectAnswer: (answer: string, index: number) => void;
-  otherOpinions?: string[]; // 다른 참가자들의 의견
   serverValidationResult?: { isCorrect: boolean; points: number } | null;
   currentShuffledOptions?: { options: string[], mapping: number[] } | null;
 }
@@ -31,7 +30,6 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
   selectedAnswerIndex,
   showResult,
   onSelectAnswer,
-  otherOpinions,
   serverValidationResult,
   currentShuffledOptions
 }) => {
@@ -66,7 +64,6 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                 onSelectAnswer={onSelectAnswer} 
                 showResult={showResult}
                 disabled={showResult || timeLeft === 0}
-                otherOpinions={otherOpinions}
                 serverValidationResult={serverValidationResult}
                 currentShuffledOptions={currentShuffledOptions}
               />

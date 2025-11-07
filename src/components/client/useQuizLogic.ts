@@ -84,8 +84,6 @@ export const useQuizLogic = (quizId: string | undefined) => {
   // 현재 문제의 섞인 선택지와 매핑 정보를 저장
   const [currentShuffledOptions, setCurrentShuffledOptions] = useState<{ options: string[], mapping: number[] } | null>(null);
 
-  // 의견 수집용 - 다른 참가자들의 답변
-  const [otherOpinions, setOtherOpinions] = useState<string[]>([]);
 
   // 서버 검증 결과 상태
   const [serverValidationResult, setServerValidationResult] = useState<{ isCorrect: boolean; points: number } | null>(null);
@@ -424,39 +422,8 @@ export const useQuizLogic = (quizId: string | undefined) => {
     // 서버 검증 결과 초기화
     setServerValidationResult(null);
     
-    // 의견 수집 문제일 때 다른 참가자들의 답변 가져오기
-    if (question.type === 'opinion' && quizId && actualIndex !== undefined) {
-      fetchOtherOpinions(actualIndex);
-    } else {
-      setOtherOpinions([]);
-    }
   }, [currentQuestionIndex, quiz, questionOrder, quizId]);
 
-  // 다른 참가자들의 의견 가져오기
-  const fetchOtherOpinions = async (questionIndex: number) => {
-    if (!quizId || !userId) return;
-    
-    try {
-      const answersRef = ref(rtdb, `sessionAnswers/${quizId}_question_${questionIndex}`);
-      const snapshot = await get(answersRef);
-      
-      if (snapshot.exists()) {
-        const answers = snapshot.val();
-        const opinions: string[] = [];
-        
-        Object.keys(answers).forEach(participantId => {
-          if (participantId !== userId && answers[participantId].answer) {
-            opinions.push(answers[participantId].answer);
-          }
-        });
-        
-        // 최신 5개의 의견만 표시
-        setOtherOpinions(opinions.slice(-5));
-      }
-    } catch (error) {
-      console.error('다른 참가자 의견 가져오기 오류:', error);
-    }
-  };
 
   // 퀴즈 리셋
   const resetQuiz = async () => {
@@ -538,7 +505,6 @@ export const useQuizLogic = (quizId: string | undefined) => {
       setCurrentQuestionIndex(0);
       setError(null);
       setQuizStarted(false);
-      setOtherOpinions([]);
       setServerValidationResult(null);
       
       if (timerIntervalRef.current) {
@@ -885,7 +851,6 @@ export const useQuizLogic = (quizId: string | undefined) => {
     questionKey,
     questionOrder,
     currentShuffledOptions,
-    otherOpinions,
     serverValidationResult,
     handleStartQuiz,
     handleSelectAnswer,

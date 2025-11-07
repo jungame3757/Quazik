@@ -101,27 +101,7 @@
       }
     },
     
-    "sessionAnswers": {
-      ".read": "auth !== null",
-      ".write": "auth !== null",
-      
-      "$sessionId": {
-        "$questionIndex": {
-          "$userId": {
-            ".write": "auth !== null && auth.uid === $userId",
-            "answeredAt": {
-              ".validate": "newData.isNumber()"
-            },
-            "isCorrect": {
-              ".validate": "newData.isBoolean()"
-            },
-            "points": {
-              ".validate": "newData.isNumber() && newData.val() >= 0"
-            }
-          }
-        }
-      }
-    },
+    
     
     "userSessions": {
       ".read": "auth !== null",

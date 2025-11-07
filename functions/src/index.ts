@@ -342,8 +342,7 @@ async function deleteSessionFromRTDB(sessionId: string, session: Session): Promi
       rtdb.ref(`quizData/${sessionId}`).remove()
     ];
     
-    // 응답 데이터 삭제 (새 구조: 세션 단위 상위 경로 제거)
-    deletePromises.push(rtdb.ref(`sessionAnswers/${sessionId}`).remove());
+    // sessionAnswers 경로 제거됨
     
     // 먼저 모든 관련 데이터 삭제를 병렬로 처리
     await Promise.all(deletePromises);

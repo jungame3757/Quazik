@@ -51,10 +51,7 @@ sessionQuestions/
     {questionIndex}/
       - revealed, startedAt, endedAt
 
-sessionAnswers/
-  {sessionId}_question_{questionIndex}/
-    {userId}/
-      - answer, answeredAt, isCorrect, score
+// sessionAnswers 경로는 제거되었습니다
 
 quizData/
   {sessionId}/

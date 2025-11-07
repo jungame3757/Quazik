@@ -11,7 +11,6 @@ interface QuizQuestionProps {
   onSelectAnswer: (answer: string, index: number) => void;
   showResult: boolean;
   disabled: boolean;
-  otherOpinions?: string[]; // 다른 참가자들의 의견
   // 서버 검증 결과를 받기 위한 prop 추가
   serverValidationResult?: { isCorrect: boolean; points: number } | null;
   // 섞인 선택지 정보를 받기 위한 prop 추가
@@ -24,7 +23,6 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
   onSelectAnswer,
   showResult,
   disabled,
-  otherOpinions,
   serverValidationResult,
   currentShuffledOptions
 }) => {
@@ -291,48 +289,6 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
       {question.type === 'opinion' && (
         <div className="mt-6">
           <div className="max-w-lg mx-auto">
-            
-            {/* 다른 사람들의 의견 표시 */}
-            {otherOpinions && otherOpinions.length > 0 && (
-              <div className="mb-6">
-                <div className="flex flex-wrap gap-3 justify-center">
-                  {otherOpinions.slice(0, 5).map((opinion, index) => {
-                    // 다양한 색상 배열
-                    const colors = [
-                      'bg-gradient-to-r from-orange-100 to-orange-50',
-                      'bg-gradient-to-r from-blue-100 to-blue-50',
-                      'bg-gradient-to-r from-green-100 to-green-50',
-                      'bg-gradient-to-r from-purple-100 to-purple-50',
-                      'bg-gradient-to-r from-pink-100 to-pink-50'
-                    ];
-                    
-                    return (
-                      <div 
-                        key={index}
-                        className={`${colors[index % colors.length]} rounded-full px-4 py-2 text-sm text-gray-700 font-medium whitespace-nowrap animate-fade-in`}
-                        style={{
-                          boxShadow: '0 2px 0 rgba(0,0,0,0.8)',
-                          border: '2px solid #000',
-                          transition: 'all 0.2s ease',
-                          animationDelay: `${index * 0.2}s`,
-                          opacity: 0,
-                          animation: `fadeInUp 0.6s ease-out ${index * 0.2}s forwards`,
-                          '--rotation': `${(index % 2 === 0 ? 1 : -1) * (Math.random() * 3)}deg`
-                        } as React.CSSProperties & { '--rotation': string }}
-                      >
-                        {opinion.length > 20 ? `${opinion.slice(0, 20)}...` : opinion}
-                      </div>
-                    );
-                  })}
-                </div>
-                {otherOpinions.length > 5 && (
-                  <div className="text-center mt-3 text-xs text-gray-400">
-                    외 {otherOpinions.length - 5}개의 생각들...
-                  </div>
-                )}
-              </div>
-            )}
-            
             <textarea
               value={opinion}
               onChange={(e) => {

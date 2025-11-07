@@ -11,7 +11,6 @@ import {
   subscribeToSession,
   subscribeToParticipants,
   subscribeToQuestionStatus,
-  subscribeToAnswers,
   getSessionsByHostId,
   getSessionsByQuizId,
   getActiveSessionCountByHostId,
@@ -19,7 +18,6 @@ import {
   Session,
   Participant,
   QuestionStatus,
-  Answer,
   SessionOptions,
   createSessionWithQuizData,
   getQuizDataForClient,
@@ -33,7 +31,6 @@ interface SessionContextType {
   currentSession: Session | null;
   participants: Record<string, Participant>;
   questionStatus: Record<number, QuestionStatus>;
-  answers: Record<number, Record<string, Answer>>;
   loading: boolean;
   error: string | null;
   
@@ -72,7 +69,6 @@ const initialState: SessionContextType = {
   currentSession: null,
   participants: {},
   questionStatus: {},
-  answers: {},
   loading: false,
   error: null,
   
@@ -105,7 +101,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [participants, setParticipants] = useState<Record<string, Participant>>({});
   const [questionStatus, setQuestionStatus] = useState<Record<number, QuestionStatus>>({});
-  const [answers, setAnswers] = useState<Record<number, Record<string, Answer>>>({});
+  // sessionAnswers 기반 answers 상태 제거됨
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -328,7 +324,6 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       // 현재 문제 상태도 구독
       if (session) {
         subscribeToQuestionStatusData(sessionId, session.currentQuestion);
-        subscribeToAnswersData(sessionId, session.currentQuestion);
       } else {
         setCurrentSession(null);
       }
@@ -363,15 +358,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     });
   };
   
-  // 응답 구독
-  const subscribeToAnswersData = (sessionId: string, questionIndex: number) => {
-    subscribeToAnswers(sessionId, questionIndex, (answersData) => {
-      setAnswers(prev => ({
-        ...prev,
-        [questionIndex]: answersData
-      }));
-    });
-  };
+  // sessionAnswers 실시간 구독 제거됨
   
   // 다음 문제로 이동
   const goToNextQuestion = async (sessionId: string): Promise<void> => {
@@ -388,7 +375,6 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       
       // 새 문제의 상태 구독
       subscribeToQuestionStatusData(sessionId, nextQuestionIndex);
-      subscribeToAnswersData(sessionId, nextQuestionIndex);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '다음 문제로 이동하는데 실패했습니다.';
       setError(errorMessage);
@@ -493,7 +479,6 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
         setCurrentSession(null);
         setParticipants({});
         setQuestionStatus({});
-        setAnswers({});
         
         // 구독 취소
         if (unsubscribeSession) {
@@ -572,7 +557,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       setCurrentSession(null);
       setParticipants({});
       setQuestionStatus({});
-      setAnswers({});
+      // answers 상태 제거됨
       
       // 구독 취소
       if (unsubscribeSession) {
@@ -599,7 +584,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     setCurrentSession(null);
     setParticipants({});
     setQuestionStatus({});
-    setAnswers({});
+      // answers 상태 제거됨
     
     // 구독 취소
     if (unsubscribeSession) {
@@ -652,7 +637,6 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
         currentSession,
         participants,
         questionStatus,
-        answers,
         loading,
         error,
         createSessionForQuiz,

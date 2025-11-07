@@ -158,14 +158,6 @@ RTDB는 실시간으로 동기화되어야 하는 세션 관련 데이터를 주
             *   `score`: (Number) 해당 시도에서 얻은 총 점수
             *   `completedAt`: (Number) 해당 시도 완료 시간 (Unix Timestamp)
 
-### 세션 답변 데이터
-
-*   `/sessionAnswers/{sessionId}_question_{questionIndex}/{participantId}`: 세션 중 제출된 참가자별 답변 데이터입니다.
-    *   `answer`: (String) 답변 내용 (객관식은 인덱스의 문자열, 주관식/의견은 텍스트)
-    *   `answeredAt`: (Number) 답변 제출 시간 (Unix Timestamp)
-    *   `isCorrect`: (Boolean) 정답 여부
-    *   `score`: (Number) 획득한 점수
-
 ### 세션 질문 상태
 
 *   `/sessionQuestions/{sessionId}/{questionIndex}`: 각 질문의 진행 상태를 추적합니다.

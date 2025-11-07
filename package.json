@@ -5,11 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:test": "vite --mode test",
+    "dev:prod": "vite --mode production",
     "build": "vite build",
+    "build:test": "vite build --mode test",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && firebase deploy --only hosting",
-    "deploy:test": "npm run build && firebase hosting:channel:deploy testserver"
+    "deploy": "npm run build:prod && firebase deploy --project default --only hosting",
+    "deploy:host:test": "npm run build:test && firebase deploy --project test --only hosting",
+    "deploy:functions:prod": "npm --prefix functions run deploy -- --project default",
+    "deploy:functions:test": "npm --prefix functions run deploy -- --project test",
+    "deploy:rules:prod": "firebase deploy --only firestore:rules,firestore:indexes,database --project default",
+    "deploy:rules:test": "firebase deploy --only firestore:rules,firestore:indexes,database --project test"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
